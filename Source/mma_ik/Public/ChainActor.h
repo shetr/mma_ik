@@ -2,8 +2,11 @@
 
 #pragma once
 
+#include "G_Chain.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/StaticMeshActor.h"
 #include "ChainActor.generated.h"
 
 UCLASS()
@@ -15,19 +18,28 @@ public:
 	// Sets default values for this actor's properties
 	AChainActor();
 
+
+	UPROPERTY(EditAnywhere, Category = "Segments")
+	TSubclassOf<AStaticMeshActor> ChainSegment;
+
+
+	UPROPERTY(EditAnywhere, Category = "Segments")
+	float TotalChainLength = 200.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Segments")
+	int32 NumberOfSegments = 10;
+
 private:
-	UStaticMeshComponent* ChainMesh;
 
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	TArray<AChainActor*> childChains;
+	TArray<AStaticMeshActor*> ChildSegments;
 
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void CreateChildCube(const FVector& RelativeLocation);
 
 };
