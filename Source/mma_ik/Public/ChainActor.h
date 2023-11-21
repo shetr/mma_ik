@@ -3,6 +3,8 @@
 #pragma once
 
 #include "G_Chain.h"
+#include "ChainData.h"
+#include "IK_SolverBase.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -22,6 +24,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Segments")
 	TSubclassOf<AStaticMeshActor> ChainSegment;
 
+	UPROPERTY(EditAnywhere, Category = "Segments")
+	TSubclassOf<AStaticMeshActor> TargetPointClass;
+
+	UPROPERTY(EditAnywhere, Category = "Segments")
+	TSubclassOf<AIK_SolverBase> SolverClass;
 
 	UPROPERTY(EditAnywhere, Category = "Segments")
 	float TotalChainLength = 200.0f;
@@ -35,9 +42,9 @@ private:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	TArray<AStaticMeshActor*> ChildSegments;
 
-
+	ChainData data;
+	AIK_SolverBase* solver = nullptr;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
