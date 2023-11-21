@@ -27,5 +27,5 @@ public:
 
 	virtual void Reset(ChainData& data);
 
-	virtual void Solve(ChainData& data);
+	virtual void Solve(ChainData& data, const FVector& origin, float DeltaTime);
 };

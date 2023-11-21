@@ -28,5 +28,10 @@ public:
 
 	virtual void Reset(ChainData& data) override;
 
-	virtual void Solve(ChainData& data) override;
+	virtual void Solve(ChainData& data, const FVector& origin, float DeltaTime) override;
+
+private:
+	float AngleObjective(float t, int n, float alpha) const;
+
+	float AngleOptimum(float t, int n) const;
 };

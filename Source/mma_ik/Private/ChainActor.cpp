@@ -70,15 +70,14 @@ void AChainActor::BeginPlay()
     {
         solver = GetWorld()->SpawnActor<AIK_SolverBase>(SolverClass, GetActorLocation(), {});
     }
-    UE_LOG(LogTemp, Warning, TEXT("Test log 1"));
 }
 
 // Called every frame
 void AChainActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-    UE_LOG(LogTemp, Warning, TEXT("Test log 2"));
+    //UE_LOG(LogTemp, Warning, TEXT("Test log 2"));
     if (solver) {
-        solver->Solve(data);
+        solver->Solve(data, GetActorLocation(), DeltaTime);
     }
 }
