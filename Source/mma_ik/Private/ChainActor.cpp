@@ -33,8 +33,25 @@ void AChainActor::BeginPlay()
     data.TotalChainLength = TotalChainLength;
     data.NumberOfSegments = NumberOfSegments;
 
+    GenerateSegments();
+
+    if (TargetPointClass)
+    {
+        FVector cLoc = FVector(0.0f, 0.0f, data.TotalChainLength);
+        data.TargetPoint = GetWorld()->SpawnActor<AStaticMeshActor>(TargetPointClass, GetActorLocation() + cLoc, {});
+        data.TargetPoint->SetMobility(EComponentMobility::Type::Movable);
+    }
+
+    if (SolverClass)
+    {
+        solver = GetWorld()->SpawnActor<AIK_SolverBase>(SolverClass, GetActorLocation(), {});
+    }
+}
+
+void AChainActor::GenerateSegments()
+{
     float segmentLength = data.GetSegmentLength();
-	
+
     for (int i = 0; i < data.NumberOfSegments; i++)
     {
         FVector cLoc = FVector(0.0f, 0.0f, segmentLength * i);
@@ -59,17 +76,6 @@ void AChainActor::BeginPlay()
 
         //ChildSegment->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
     }
-
-    if (TargetPointClass)
-    {
-        FVector cLoc = FVector(0.0f, 0.0f, data.TotalChainLength);
-        data.TargetPoint = GetWorld()->SpawnActor<AStaticMeshActor>(TargetPointClass, GetActorLocation() + cLoc, {});
-    }
-
-    if (SolverClass)
-    {
-        solver = GetWorld()->SpawnActor<AIK_SolverBase>(SolverClass, GetActorLocation(), {});
-    }
 }
 
 // Called every frame
@@ -77,6 +83,17 @@ void AChainActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
     //UE_LOG(LogTemp, Warning, TEXT("Test log 2"));
+
+    if (data.NumberOfSegments != NumberOfSegments || data.TotalChainLength != TotalChainLength) {
+        for (int i = 0; i < data.NumberOfSegments; i++) {
+            data.ChildSegments[i]->Destroy();
+        }
+        data.ChildSegments.Empty();
+        data.TotalChainLength = TotalChainLength;
+        data.NumberOfSegments = NumberOfSegments;
+        GenerateSegments();
+    }
+
     if (solver) {
         solver->Solve(data, GetActorLocation(), DeltaTime);
     }

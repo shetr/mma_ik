@@ -38,10 +38,11 @@ public:
 
 private:
 
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void GenerateSegments();
 
 	ChainData data;
 	AIK_SolverBase* solver = nullptr;
