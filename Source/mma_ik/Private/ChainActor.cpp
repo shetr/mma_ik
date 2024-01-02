@@ -101,8 +101,4 @@ void AChainActor::Tick(float DeltaTime)
         solver->Solve(data, GetActorLocation(), DeltaTime);
     }
 
-    TArray<int> test;
-    test.SetNum(5);
-
-    UE_LOG(LogTemp, Warning, TEXT("size: %d"), test.Num());
 }

@@ -22,7 +22,7 @@ void MatrixMxN::SetNum(int width, int height)
 {
 	_width = width;
 	_height = height;
-	_values.SetNum(width * height);
+	_values.Init(0.0f, width * height);
 }
 
 float MatrixMxN::operator()(int i, int j) const

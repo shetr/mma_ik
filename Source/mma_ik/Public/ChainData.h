@@ -31,6 +31,6 @@ public:
 
 	void Reset();
 	void RecomputeSegmentTransforms();
-	void RecomputeJacobian(FVector target);
+	void RecomputeJacobian();
 	void TransformSegments(const FVector& origin);
 };

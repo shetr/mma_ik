@@ -29,40 +29,38 @@ void ChainData::RecomputeSegmentTransforms()
 	{
 		FMatrix localRotation = FRotationMatrix::Make(this->SegmentAngles[i]);
 		FMatrix localTranslation = FMatrix::Identity;
-		localTranslation.M[2][3] = this->GetSegmentLength();
-		FMatrix localTransform = localTranslation;
-		localTransform *= localRotation;
+		localTranslation.SetColumn(3, FVector(0, 0, this->GetSegmentLength()));
+		FMatrix localTransform = localRotation * localTranslation;
 		this->SegmentLocalTransforms[i] = localTransform;
-		FMatrix globalTransform = localTransform;
-		globalTransform *= prevTransform;
+		FMatrix globalTransform = prevTransform * localTransform;
 		this->SegmentGlobalTransforms[i] = globalTransform;
 		prevTransform = globalTransform;
 	}
 }
 
-void ChainData::RecomputeJacobian(FVector target)
+void ChainData::RecomputeJacobian()
 {
 	Jacobian.SetNum(3 * NumberOfSegments, 3);
 	for (int i = 0; i < this->NumberOfSegments; ++i)
 	{
 		FVector segmentLocation = ChildSegments[i]->GetActorLocation();
-		FVector diff = target - segmentLocation;
+		FVector diff = EndEffectorPos - segmentLocation;
 
 		// TODO: IF BUG CORRECT pitch and roll axis 
-		FVector pitchAxis = FVector::CrossProduct(this->SegmentGlobalTransforms[i].TransformVector(FVector::YAxisVector), diff);
-		FVector rollAxis = FVector::CrossProduct(this->SegmentGlobalTransforms[i].TransformVector(FVector::XAxisVector), diff);
-		FVector yawAxis = FVector::CrossProduct(this->SegmentGlobalTransforms[i].TransformVector(FVector::ZAxisVector), diff);
-		Jacobian(3 * i + 0, 0) = pitchAxis.X;
-		Jacobian(3 * i + 0, 1) = pitchAxis.Y;
-		Jacobian(3 * i + 0, 2) = pitchAxis.Z;
+		FVector pitchDir = FVector::CrossProduct(this->SegmentGlobalTransforms[i].TransformVector(FVector::YAxisVector), diff);
+		FVector rollDir = FVector::CrossProduct(this->SegmentGlobalTransforms[i].TransformVector(FVector::XAxisVector), diff);
+		FVector yawDir = FVector::CrossProduct(this->SegmentGlobalTransforms[i].TransformVector(FVector::ZAxisVector), diff);
+		Jacobian(3 * i + 0, 0) = pitchDir.X;
+		Jacobian(3 * i + 0, 1) = pitchDir.Y;
+		Jacobian(3 * i + 0, 2) = pitchDir.Z;
 
-		Jacobian(3 * i + 1, 0) = rollAxis.X;
-		Jacobian(3 * i + 1, 1) = rollAxis.Y;
-		Jacobian(3 * i + 1, 2) = rollAxis.Z;
+		Jacobian(3 * i + 1, 0) = rollDir.X;
+		Jacobian(3 * i + 1, 1) = rollDir.Y;
+		Jacobian(3 * i + 1, 2) = rollDir.Z;
 
-		Jacobian(3 * i + 2, 0) = yawAxis.X;
-		Jacobian(3 * i + 2, 1) = yawAxis.Y;
-		Jacobian(3 * i + 2, 2) = yawAxis.Z;
+		//Jacobian(3 * i + 2, 0) = yawDir.X;
+		//Jacobian(3 * i + 2, 1) = yawDir.Y;
+		//Jacobian(3 * i + 2, 2) = yawDir.Z;
 	}
 }
 
@@ -70,16 +68,19 @@ void ChainData::TransformSegments(const FVector& origin)
 {
 	for (int i = 0; i < this->NumberOfSegments; ++i)
 	{
-		FVector posStart = origin;
+		FVector posStart = FVector::Zero();
 		if (i > 0) {
-			posStart = this->SegmentGlobalTransforms[i - 1].TransformPosition(posStart);
+			posStart = this->SegmentGlobalTransforms[i - 1].GetColumn(3);
 		}
-		FVector posEnd = this->SegmentGlobalTransforms[i].TransformPosition(origin);
+		FVector posEnd = this->SegmentGlobalTransforms[i].GetColumn(3);
+		//UE_LOG(LogTemp, Warning, TEXT("i: %d, posStart: %f, %f, %f"), i, posStart.X, posStart.Y, posStart.Z);
+		//UE_LOG(LogTemp, Warning, TEXT("i: %d, posEnd:   %f, %f, %f"), i, posEnd.X, posEnd.Y, posEnd.Z);
 
-		this->ChildSegments[i]->SetActorLocation(posStart);
+		this->ChildSegments[i]->SetActorLocation(origin + posStart);
 
 		FVector dir = (posEnd - posStart).GetSafeNormal();
 		FQuat rot = FQuat::FindBetween(FVector::UpVector, dir);
 		this->ChildSegments[i]->SetActorRotation(rot);
 	}
+	EndEffectorPos = this->SegmentGlobalTransforms.Last().GetColumn(3);
 }

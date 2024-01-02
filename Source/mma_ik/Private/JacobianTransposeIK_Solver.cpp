@@ -24,28 +24,30 @@ void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, 
 {
     float h = 0.001f;
     float EPS = 0.001f;
-    FVector lastSegmentPosition = data.ChildSegments.Last()->GetActorLocation();
     FVector targetPosition = data.TargetPoint->GetActorLocation();
     data.RecomputeSegmentTransforms();
+    data.TransformSegments(origin);
     int iter = 0;
-    while (abs((lastSegmentPosition - targetPosition).Length() - data.GetSegmentLength()) > EPS) 
+
+    UE_LOG(LogTemp, Warning, TEXT("data.EndEffectorPos: %f, %f, %f"), data.EndEffectorPos.X, data.EndEffectorPos.Y, data.EndEffectorPos.Z);
+    while ((data.EndEffectorPos - targetPosition).Length() > EPS)
     {
-        iter++;
-        if (iter > 15)
+        if (iter > 0)
             break;
-        data.RecomputeJacobian(targetPosition);
+        data.RecomputeJacobian();
         data.Jacobian.Transpose(JacobianTranspose);
         dX.Set(targetPosition - data.EndEffectorPos);
         JacobianTranspose.Multiply(dX, dO);
-
+    
         for (int i = 0; i < data.NumberOfSegments; ++i)
         {
             data.SegmentAngles[i].Pitch += dO[3 * i + 0] * h;
             data.SegmentAngles[i].Roll += dO[3 * i + 1] * h;
             data.SegmentAngles[i].Yaw += dO[3 * i + 2] * h;
+            UE_LOG(LogTemp, Warning, TEXT("angles: %f, %f, %f"), data.SegmentAngles[i].Pitch, data.SegmentAngles[i].Roll, data.SegmentAngles[i].Yaw);
         }
         data.RecomputeSegmentTransforms();
         data.TransformSegments(origin);
-        lastSegmentPosition = data.ChildSegments.Last()->GetActorLocation();
+        iter++;
     }
 }
