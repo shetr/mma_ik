@@ -3,14 +3,26 @@
 
 #include "MatrixMxN.h"
 
+MatrixMxN::MatrixMxN()
+	: MatrixMxN(1, 1)
+{
+}
+
 MatrixMxN::MatrixMxN(int width, int height)
 	: _width(width), _height(height)
 {
-	_values.AddZeroed(width * height);
+	_values.SetNum(width * height);
 }
 
 MatrixMxN::~MatrixMxN()
 {
+}
+
+void MatrixMxN::SetNum(int width, int height)
+{
+	_width = width;
+	_height = height;
+	_values.SetNum(width * height);
 }
 
 float MatrixMxN::operator()(int i, int j) const
@@ -25,10 +37,11 @@ float& MatrixMxN::operator()(int i, int j)
 
 void MatrixMxN::Multiply(const VectorNDim& in, VectorNDim& out)
 {
+	out.Reset(_height);
 	for (size_t j = 0; j < out.GetSize(); j++)
 	{
 		out[j] = 0;
-		for (size_t i = 0; i < out.GetSize(); i++)
+		for (size_t i = 0; i < in.GetSize(); i++)
 		{
 			out[j] += (*this)(i, j) * in[i];
 		}
@@ -37,6 +50,7 @@ void MatrixMxN::Multiply(const VectorNDim& in, VectorNDim& out)
 
 void MatrixMxN::Transpose(MatrixMxN& out)
 {
+	out.SetNum(_height, _width);
 	for (size_t j = 0; j < _height; j++)
 	{
 		for (size_t i = 0; i < _width; i++)

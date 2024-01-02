@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Engine/StaticMeshActor.h"
 
+#include "MatrixMxN.h"
+
 /**
  * 
  */
@@ -19,5 +21,16 @@ public:
 	float TotalChainLength = 200.0f;
 	int32 NumberOfSegments = 10;
 	TArray<AStaticMeshActor*> ChildSegments;
+	FVector EndEffectorPos;
+	TArray<FRotator> SegmentAngles;
+	TArray<FMatrix> SegmentLocalTransforms;
+	TArray<FMatrix> SegmentGlobalTransforms;
+	MatrixMxN Jacobian;
 	AStaticMeshActor* TargetPoint;
+
+
+	void Reset();
+	void RecomputeSegmentTransforms();
+	void RecomputeJacobian(FVector target);
+	void TransformSegments(const FVector& origin);
 };

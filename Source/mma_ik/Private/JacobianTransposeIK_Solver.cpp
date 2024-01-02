@@ -4,6 +4,7 @@
 #include "JacobianTransposeIK_Solver.h"
 
 AJacobianTransposeIK_Solver::AJacobianTransposeIK_Solver()
+    : dX(3)
 {
 }
 
@@ -23,25 +24,28 @@ void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, 
 {
     float h = 0.001f;
     float EPS = 0.001f;
-    //while (abs(endEffectorPosition — targetPosition) > EPS) {
-    //    dO = GetDeltaOrientation();
-    //    O += dO * h; // T=O+dO*h
-    //}
+    FVector lastSegmentPosition = data.ChildSegments.Last()->GetActorLocation();
+    FVector targetPosition = data.TargetPoint->GetActorLocation();
+    data.RecomputeSegmentTransforms();
+    int iter = 0;
+    while (abs((lastSegmentPosition - targetPosition).Length() - data.GetSegmentLength()) > EPS) 
+    {
+        iter++;
+        if (iter > 15)
+            break;
+        data.RecomputeJacobian(targetPosition);
+        data.Jacobian.Transpose(JacobianTranspose);
+        dX.Set(targetPosition - data.EndEffectorPos);
+        JacobianTranspose.Multiply(dX, dO);
+
+        for (int i = 0; i < data.NumberOfSegments; ++i)
+        {
+            data.SegmentAngles[i].Pitch += dO[3 * i + 0] * h;
+            data.SegmentAngles[i].Roll += dO[3 * i + 1] * h;
+            data.SegmentAngles[i].Yaw += dO[3 * i + 2] * h;
+        }
+        data.RecomputeSegmentTransforms();
+        data.TransformSegments(origin);
+        lastSegmentPosition = data.ChildSegments.Last()->GetActorLocation();
+    }
 }
-
-//Vector GetDeltaOrientation() {
-//    Jt = GetJacobianTranspose();
-//    V = targetPosition — endEffectorPosition;
-//    dO = Jt * V; // Matrix-Vector Mult.
-//    return dO;
-//}
-
-//Matrix GetJacobianTranspose() {
-//    J_A = CrossProduct(rotAxisA, endEffectorPos — jointAPos);
-//    J_B = CrossProduct(rotAxisB, endEffectorPos — jointBPos);
-//    J_C = CrossProduct(rotAxisC, endEffectorPos — jointCPos);    J = new Matrix();
-//    J.addColumn(J_A);
-//    J.addColumn(J_B);
-//    J.addColumn(J_C);
-//    return J.transpose();
-//}

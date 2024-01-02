@@ -29,4 +29,9 @@ public:
 	virtual void Reset(ChainData& data) override;
 
 	virtual void Solve(ChainData& data, const FVector& origin, float DeltaTime) override;
+
+private:
+	MatrixMxN JacobianTranspose;
+	VectorNDim dX;
+	VectorNDim dO;
 };

@@ -12,8 +12,11 @@
 class MMA_IK_API MatrixMxN
 {
 public:
+	MatrixMxN();
 	MatrixMxN(int width, int height);
 	~MatrixMxN();
+
+	void SetNum(int width, int height);
 
 	int GetWidth() const { return _width; }
 	int GetHeight() const { return _height; }

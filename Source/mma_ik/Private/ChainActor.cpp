@@ -76,6 +76,8 @@ void AChainActor::GenerateSegments()
 
         //ChildSegment->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
     }
+    data.EndEffectorPos = FVector(0.0f, 0.0f, TotalChainLength);
+    data.Reset();
 }
 
 // Called every frame
@@ -92,9 +94,15 @@ void AChainActor::Tick(float DeltaTime)
         data.TotalChainLength = TotalChainLength;
         data.NumberOfSegments = NumberOfSegments;
         GenerateSegments();
+        data.Reset();
     }
 
     if (solver) {
         solver->Solve(data, GetActorLocation(), DeltaTime);
     }
+
+    TArray<int> test;
+    test.SetNum(5);
+
+    UE_LOG(LogTemp, Warning, TEXT("size: %d"), test.Num());
 }
