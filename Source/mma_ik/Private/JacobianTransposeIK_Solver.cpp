@@ -22,7 +22,7 @@ void AJacobianTransposeIK_Solver::Reset(ChainData& data)
 
 void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, float DeltaTime)
 {
-    float h = 0.001f;
+    float h = 0.01f;
     float EPS = 0.001f;
     FVector targetPosition = data.TargetPoint->GetActorLocation();
     data.RecomputeSegmentTransforms();
@@ -41,9 +41,9 @@ void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, 
     
         for (int i = 0; i < data.NumberOfSegments; ++i)
         {
-            data.SegmentAngles[i].Pitch += dO[3 * i + 0] * h;
-            data.SegmentAngles[i].Roll += dO[3 * i + 1] * h;
-            data.SegmentAngles[i].Yaw += dO[3 * i + 2] * h;
+            data.SegmentAngles[i].Pitch += dO[3 * i + 0] * h * DeltaTime;
+            data.SegmentAngles[i].Roll += dO[3 * i + 1] * h * DeltaTime;
+            data.SegmentAngles[i].Yaw += dO[3 * i + 2] * h * DeltaTime;
             UE_LOG(LogTemp, Warning, TEXT("angles: %f, %f, %f"), data.SegmentAngles[i].Pitch, data.SegmentAngles[i].Roll, data.SegmentAngles[i].Yaw);
         }
         data.RecomputeSegmentTransforms();
@@ -51,3 +51,4 @@ void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, 
         iter++;
     }
 }
+
