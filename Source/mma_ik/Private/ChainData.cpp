@@ -82,5 +82,5 @@ void ChainData::TransformSegments(const FVector& origin)
 		FQuat rot = FQuat::FindBetween(FVector::UpVector, dir);
 		this->ChildSegments[i]->SetActorRotation(rot);
 	}
-	EndEffectorPos = this->SegmentGlobalTransforms.Last().GetColumn(3);
+	EndEffectorPos = origin + this->SegmentGlobalTransforms.Last().GetColumn(3);
 }
