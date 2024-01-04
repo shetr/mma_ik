@@ -16,6 +16,23 @@ VectorNDim::~VectorNDim()
 {
 }
 
+void VectorNDim::Clone(const VectorNDim& v)
+{
+	Reset(v.GetSize());
+	for (size_t i = 0; i < values.Num(); i++)
+	{
+		values[i] = v.values[i];
+	}
+}
+
+void VectorNDim::ClonePart(const VectorNDim& v)
+{
+	for (size_t i = 0; i < values.Num() && i < v.values.Num(); i++)
+	{
+		values[i] = v.values[i];
+	}
+}
+
 void VectorNDim::Reset(int dim)
 {
 	values.SetNum(dim);
@@ -30,18 +47,19 @@ VectorNDim& VectorNDim::operator+=(const VectorNDim& other)
 	return *this;
 }
 
-float VectorNDim::operator[](int i) const
+double VectorNDim::operator[](int i) const
 {
 	return values[i];
 }
 
-float& VectorNDim::operator[](int i)
+double& VectorNDim::operator[](int i)
 {
 	return values[i];
 }
 
 void VectorNDim::Set(FVector v)
 {
+	values.SetNum(3);
 	values[0] = v.X;
 	values[1] = v.Y;
 	values[2] = v.Z;

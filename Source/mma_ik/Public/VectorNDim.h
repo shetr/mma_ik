@@ -14,15 +14,18 @@ public:
 	VectorNDim(int dim);
 	~VectorNDim();
 
+	void Clone(const VectorNDim& v);
+	void ClonePart(const VectorNDim& v);
+
 	void Reset(int dim);
 
 	VectorNDim& operator +=(const VectorNDim& other);
-	float operator[](int i) const;
-	float& operator[](int i);
+	double operator[](int i) const;
+	double& operator[](int i);
 
 	void Set(FVector v);
 
 	int GetSize() const { return values.Num(); }
 private:
-	TArray<float> values;
+	TArray<double> values;
 };

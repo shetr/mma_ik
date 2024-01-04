@@ -97,12 +97,12 @@ void ChainData::RecomputeJacobian()
 		#if 0
 		UE_LOG(LogTemp, Warning, TEXT("diff %d: %f, %f, %f"), i, diff.X, diff.Y, diff.Z);
 		#endif
-		#if 1
+		#if 0
 		UE_LOG(LogTemp, Warning, TEXT("xAxis %d: %f, %f, %f, l: %f"), i, xAxis.X, xAxis.Y, xAxis.Z, xAxis.Length());
 		UE_LOG(LogTemp, Warning, TEXT("yAxis %d: %f, %f, %f, l: %f"), i, yAxis.X, yAxis.Y, yAxis.Z, yAxis.Length());
 		UE_LOG(LogTemp, Warning, TEXT("zAxis %d: %f, %f, %f, l: %f"), i, zAxis.X, zAxis.Y, zAxis.Z, zAxis.Length());
 		#endif
-		#if 1
+		#if 0
 		UE_LOG(LogTemp, Warning, TEXT("J%d X: %f, %f, %f"), i, Jacobian(3 * i + 0, 0), Jacobian(3 * i + 0, 1), Jacobian(3 * i + 0, 2));
 		UE_LOG(LogTemp, Warning, TEXT("J%d Y: %f, %f, %f"), i, Jacobian(3 * i + 1, 0), Jacobian(3 * i + 1, 1), Jacobian(3 * i + 1, 2));
 		UE_LOG(LogTemp, Warning, TEXT("J%d Z: %f, %f, %f"), i, Jacobian(3 * i + 2, 0), Jacobian(3 * i + 2, 1), Jacobian(3 * i + 2, 2));

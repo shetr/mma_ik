@@ -30,6 +30,8 @@ public:
 	virtual void Solve(ChainData& data, const FVector& origin, float DeltaTime) override;
 
 private:
+	void ReduceJacobian(const MatrixMxN& J);
+
 	// Expects J to be matrix with 3 height and rank smaller than 3
 	void GetPseudoinv(const MatrixMxN& J, const MatrixMxN& JT);
 
@@ -46,4 +48,14 @@ private:
 	MatrixMxN JV;
 	MatrixMxN JVT;
 	MatrixMxN JU;
+
+
+	MatrixMxN Temp;
+
+	MatrixMxN RJ;
+	VectorNDim RdX;
+
+
+	MatrixMxN CJ;
+	VectorNDim CdX;
 };
