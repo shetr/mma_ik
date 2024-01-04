@@ -151,27 +151,6 @@ bool MatrixMxN::OnlyZeros() const
 	return true;
 }
 
-void MatrixMxN::PseoudoInverse3x3(MatrixMxN& out) const
-{
-	check(_width == 3);
-	check(_height == 3);
-	out.SetNum(3, 3);
-
-	const MatrixMxN& m = *this;
-	double a = -1.;
-	double b = m(0, 0) + m(1, 1) + m(2, 2);
-	double c = (-m(0, 0) * m(1, 1) - m(0, 0) * m(2, 2) - m(1, 1) * m(2, 2) + m(0, 1) * m(0, 1) + m(0, 2) * m(0, 2) + m(1, 2) * m(1, 2));
-
-	double D = b * b - 4.0 * a * c;
-	if (D < 0) {
-		UE_LOG(LogTemp, Warning, TEXT("negative discriminant"));
-		return;
-	}
-	double sqrtD = sqrt(D);
-	double l1 = (-b + sqrtD) / (2. * a);
-	double l2 = (-b - sqrtD) / (2. * a);
-}
-
 void MatrixMxN::Transpose(MatrixMxN& out)
 {
 	out.SetNum(_height, _width);

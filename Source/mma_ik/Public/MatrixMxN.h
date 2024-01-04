@@ -39,9 +39,6 @@ public:
 
 	bool OnlyZeros() const;
 
-	// delete this, moved to jacobian inverse solver
-	void PseoudoInverse3x3(MatrixMxN& out) const;
-
 	void Transpose(MatrixMxN& out);
 
 	void SwapRows(int i, int j);
