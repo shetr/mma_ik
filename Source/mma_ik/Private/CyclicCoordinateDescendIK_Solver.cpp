@@ -65,11 +65,12 @@ void ACyclicCoordinateDescendIK_Solver::Solve(ChainData& data, const FVector& or
                 float rollDiff = FMath::FindDeltaAngleDegrees(currRot.Roll, resRot.Roll);
                 float yawDiff = FMath::FindDeltaAngleDegrees(currRot.Yaw, resRot.Yaw);
 
-                data.SegmentAngles[i].Pitch += pitchDiff;
-                data.SegmentAngles[i].Roll += rollDiff;
+                // TODO: fix
+                data.SegmentAngles[i].Y += pitchDiff;
+                data.SegmentAngles[i].Z += yawDiff;
                 //data.SegmentAngles[i].Yaw += yawDiff;
 
-                UE_LOG(LogTemp, Warning, TEXT("Pitch: %f, Roll: %f, Yaw: %f"), data.SegmentAngles[i].Pitch, data.SegmentAngles[i].Roll, data.SegmentAngles[i].Yaw);
+                //UE_LOG(LogTemp, Warning, TEXT("Pitch: %f, Roll: %f, Yaw: %f"), data.SegmentAngles[i].Pitch, data.SegmentAngles[i].Roll, data.SegmentAngles[i].Yaw);
 
                 if (abs(FVector(data.EndEffectorPos - targetPosition).Length()) < EPS)
                 {

@@ -44,10 +44,10 @@ void AJacobianInverseIK_Solver::Solve(ChainData& data, const FVector& origin, fl
 
         for (int i = 0; i < data.NumberOfSegments; ++i)
         {
-            data.SegmentAngles[i].Pitch += dO[3 * i + 0] * DeltaTime;
-            data.SegmentAngles[i].Roll += dO[3 * i + 1] * DeltaTime;
-            data.SegmentAngles[i].Yaw += dO[3 * i + 2] * DeltaTime;
-            UE_LOG(LogTemp, Warning, TEXT("angles: %f, %f, %f"), data.SegmentAngles[i].Pitch, data.SegmentAngles[i].Roll, data.SegmentAngles[i].Yaw);
+            data.SegmentAngles[i].X += dO[3 * i + 0] * DeltaTime;
+            data.SegmentAngles[i].Y += dO[3 * i + 1] * DeltaTime;
+            data.SegmentAngles[i].Z += dO[3 * i + 2] * DeltaTime;
+            UE_LOG(LogTemp, Warning, TEXT("angles: %f, %f, %f"), data.SegmentAngles[i].X, data.SegmentAngles[i].Y, data.SegmentAngles[i].Z);
         }
         data.RecomputeSegmentTransforms();
         data.TransformSegments(origin);

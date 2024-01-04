@@ -22,8 +22,9 @@ public:
 	int32 NumberOfSegments = 10;
 	TArray<AStaticMeshActor*> ChildSegments;
 	FVector EndEffectorPos;
-	TArray<FRotator> SegmentAngles;
+	TArray<FVector> SegmentAngles;
 	TArray<FMatrix> SegmentLocalTransforms;
+	TArray<TStaticArray<FMatrix, 3>> SegmentGlobalRotations;
 	TArray<FMatrix> SegmentGlobalTransforms;
 	MatrixMxN Jacobian;
 	AStaticMeshActor* TargetPoint;
