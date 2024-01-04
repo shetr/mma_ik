@@ -29,7 +29,9 @@ void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, 
     data.TransformSegments(origin);
     int iter = 0;
 
+    #if 0
     UE_LOG(LogTemp, Warning, TEXT("data.EndEffectorPos: %f, %f, %f"), data.EndEffectorPos.X, data.EndEffectorPos.Y, data.EndEffectorPos.Z);
+    #endif
     while ((data.EndEffectorPos - targetPosition).Length() > EPS)
     {
         if (iter > 0)
@@ -44,7 +46,9 @@ void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, 
             data.SegmentAngles[i].Pitch += dO[3 * i + 0] * h * DeltaTime;
             data.SegmentAngles[i].Roll += dO[3 * i + 1] * h * DeltaTime;
             data.SegmentAngles[i].Yaw += dO[3 * i + 2] * h * DeltaTime;
+            #if 0
             UE_LOG(LogTemp, Warning, TEXT("angles: %f, %f, %f"), data.SegmentAngles[i].Pitch, data.SegmentAngles[i].Roll, data.SegmentAngles[i].Yaw);
+            #endif
         }
         data.RecomputeSegmentTransforms();
         data.TransformSegments(origin);

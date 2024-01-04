@@ -24,7 +24,18 @@ public:
 	float operator ()(int i, int j) const;
 	float& operator ()(int i, int j);
 
-	void Multiply(const VectorNDim& in, VectorNDim& out);
+	void Multiply(const VectorNDim& in, VectorNDim& out) const;
+
+	void Multiply(const MatrixMxN& right, MatrixMxN& out) const;
+
+	double Determinant3x3() const;
+
+	void Inverse3x3(MatrixMxN& out) const;
+
+	bool OnlyZeros() const;
+
+	// delete this, moved to jacobian inverse solver
+	void PseoudoInverse3x3(MatrixMxN& out) const;
 
 	void Transpose(MatrixMxN& out);
 private:

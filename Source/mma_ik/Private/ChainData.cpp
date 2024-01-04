@@ -46,10 +46,14 @@ void ChainData::RecomputeJacobian()
 		FVector segmentLocation = ChildSegments[i]->GetActorLocation();
 		FVector diff = EndEffectorPos - segmentLocation;
 
+		FVector xAxis = this->SegmentGlobalTransforms[i].TransformVector(FVector::XAxisVector);
+		FVector yAxis = this->SegmentGlobalTransforms[i].TransformVector(FVector::YAxisVector);
+		FVector zAxis = this->SegmentGlobalTransforms[i].TransformVector(FVector::ZAxisVector);
+
 		// TODO: IF BUG CORRECT pitch and roll axis 
-		FVector pitchDir = FVector::CrossProduct(this->SegmentGlobalTransforms[i].TransformVector(FVector::YAxisVector), diff);
-		FVector rollDir = FVector::CrossProduct(this->SegmentGlobalTransforms[i].TransformVector(FVector::XAxisVector), diff);
-		FVector yawDir = FVector::CrossProduct(this->SegmentGlobalTransforms[i].TransformVector(FVector::ZAxisVector), diff);
+		FVector pitchDir = FVector::CrossProduct(yAxis, diff);
+		FVector rollDir = FVector::CrossProduct(xAxis, diff);
+		FVector yawDir = FVector::CrossProduct(zAxis, diff);
 		Jacobian(3 * i + 0, 0) = pitchDir.X;
 		Jacobian(3 * i + 0, 1) = pitchDir.Y;
 		Jacobian(3 * i + 0, 2) = pitchDir.Z;
@@ -61,6 +65,19 @@ void ChainData::RecomputeJacobian()
 		//Jacobian(3 * i + 2, 0) = yawDir.X;
 		//Jacobian(3 * i + 2, 1) = yawDir.Y;
 		//Jacobian(3 * i + 2, 2) = yawDir.Z;
+		#if 0
+		UE_LOG(LogTemp, Warning, TEXT("diff %d: %f, %f, %f"), i, diff.X, diff.Y, diff.Z);
+		#endif
+		#if 1
+		UE_LOG(LogTemp, Warning, TEXT("xAxis %d: %f, %f, %f, l: %f"), i, xAxis.X, xAxis.Y, xAxis.Z, xAxis.Length());
+		UE_LOG(LogTemp, Warning, TEXT("yAxis %d: %f, %f, %f, l: %f"), i, yAxis.X, yAxis.Y, yAxis.Z, yAxis.Length());
+		UE_LOG(LogTemp, Warning, TEXT("zAxis %d: %f, %f, %f, l: %f"), i, zAxis.X, zAxis.Y, zAxis.Z, zAxis.Length());
+		#endif
+		#if 1
+		UE_LOG(LogTemp, Warning, TEXT("J%d pitch: %f, %f, %f"), i, Jacobian(3 * i + 0, 0), Jacobian(3 * i + 0, 1), Jacobian(3 * i + 0, 2));
+		UE_LOG(LogTemp, Warning, TEXT("J%d  roll: %f, %f, %f"), i, Jacobian(3 * i + 1, 0), Jacobian(3 * i + 1, 1), Jacobian(3 * i + 1, 2));
+		UE_LOG(LogTemp, Warning, TEXT("J%d   yaw: %f, %f, %f"), i, Jacobian(3 * i + 2, 0), Jacobian(3 * i + 2, 1), Jacobian(3 * i + 2, 2));
+		#endif
 	}
 }
 
@@ -82,5 +99,5 @@ void ChainData::TransformSegments(const FVector& origin)
 		FQuat rot = FQuat::FindBetween(FVector::UpVector, dir);
 		this->ChildSegments[i]->SetActorRotation(rot);
 	}
-	EndEffectorPos = this->SegmentGlobalTransforms.Last().GetColumn(3);
+	EndEffectorPos = origin + this->SegmentGlobalTransforms.Last().GetColumn(3);
 }

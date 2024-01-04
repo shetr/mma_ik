@@ -35,7 +35,7 @@ float& MatrixMxN::operator()(int i, int j)
 	return _values[i + j * _width];
 }
 
-void MatrixMxN::Multiply(const VectorNDim& in, VectorNDim& out)
+void MatrixMxN::Multiply(const VectorNDim& in, VectorNDim& out) const
 {
 	out.Reset(_height);
 	for (size_t j = 0; j < out.GetSize(); j++)
@@ -46,6 +46,85 @@ void MatrixMxN::Multiply(const VectorNDim& in, VectorNDim& out)
 			out[j] += (*this)(i, j) * in[i];
 		}
 	}
+}
+
+void MatrixMxN::Multiply(const MatrixMxN& right, MatrixMxN& out) const
+{
+	out.SetNum(right.GetWidth(), _height);
+	check(_width == right.GetHeight());
+	for (size_t k = 0; k < right.GetWidth(); k++)
+	{
+		for (size_t j = 0; j < _height; j++)
+		{
+			out(k, j) = 0;
+			for (size_t i = 0; i < _width; i++)
+			{
+				out(k, j) += (*this)(i, j) * right(k, i);
+			}
+		}
+	}
+}
+
+double MatrixMxN::Determinant3x3() const
+{
+	check(_width == 3);
+	check(_height == 3);
+	const MatrixMxN& m = *this;
+	double det = m(0, 0) * (m(1, 1) * m(2, 2) - m(2, 1) * m(1, 2)) -
+		m(0, 1) * (m(1, 0) * m(2, 2) - m(1, 2) * m(2, 0)) +
+		m(0, 2) * (m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0));
+	return det;
+}
+
+void MatrixMxN::Inverse3x3(MatrixMxN& out) const
+{
+	check(_width == 3);
+	check(_height == 3);
+	out.SetNum(3, 3);
+
+	double invdet = 1 / Determinant3x3();
+
+	const MatrixMxN& m = *this;
+	out(0, 0) = (m(1, 1) * m(2, 2) - m(2, 1) * m(1, 2)) * invdet;
+	out(0, 1) = (m(0, 2) * m(2, 1) - m(0, 1) * m(2, 2)) * invdet;
+	out(0, 2) = (m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)) * invdet;
+	out(1, 0) = (m(1, 2) * m(2, 0) - m(1, 0) * m(2, 2)) * invdet;
+	out(1, 1) = (m(0, 0) * m(2, 2) - m(0, 2) * m(2, 0)) * invdet;
+	out(1, 2) = (m(1, 0) * m(0, 2) - m(0, 0) * m(1, 2)) * invdet;
+	out(2, 0) = (m(1, 0) * m(2, 1) - m(2, 0) * m(1, 1)) * invdet;
+	out(2, 1) = (m(2, 0) * m(0, 1) - m(0, 0) * m(2, 1)) * invdet;
+	out(2, 2) = (m(0, 0) * m(1, 1) - m(1, 0) * m(0, 1)) * invdet;
+}
+
+bool MatrixMxN::OnlyZeros() const
+{
+	for (int i = 0; i < _values.Num(); ++i) {
+		if (_values[i] == 0.0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void MatrixMxN::PseoudoInverse3x3(MatrixMxN& out) const
+{
+	check(_width == 3);
+	check(_height == 3);
+	out.SetNum(3, 3);
+
+	const MatrixMxN& m = *this;
+	double a = -1.;
+	double b = m(0, 0) + m(1, 1) + m(2, 2);
+	double c = (-m(0, 0) * m(1, 1) - m(0, 0) * m(2, 2) - m(1, 1) * m(2, 2) + m(0, 1) * m(0, 1) + m(0, 2) * m(0, 2) + m(1, 2) * m(1, 2));
+
+	double D = b * b - 4.0 * a * c;
+	if (D < 0) {
+		UE_LOG(LogTemp, Warning, TEXT("negative discriminant"));
+		return;
+	}
+	double sqrtD = sqrt(D);
+	double l1 = (-b + sqrtD) / (2. * a);
+	double l2 = (-b - sqrtD) / (2. * a);
 }
 
 void MatrixMxN::Transpose(MatrixMxN& out)
