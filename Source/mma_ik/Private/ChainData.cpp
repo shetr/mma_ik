@@ -58,6 +58,7 @@ void ChainData::RecomputeSegmentTransforms()
 	}
 }
 
+// Unreal matrix multiplication does something weird (maybe they use transposed representation, I don't know)
 FVector MyMatMul(const FMatrix& m, const FVector& v)
 {
 	FVector x;

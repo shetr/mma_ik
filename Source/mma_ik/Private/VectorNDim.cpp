@@ -38,6 +38,13 @@ void VectorNDim::Reset(int dim)
 	values.SetNum(dim);
 }
 
+void VectorNDim::SwapElems(int i, int j)
+{
+	check(i < values.Num());
+	check(j < values.Num());
+	Swap(values[i], values[j]);
+}
+
 VectorNDim& VectorNDim::operator+=(const VectorNDim& other)
 {
 	for (size_t i = 0; i < values.Num(); i++)

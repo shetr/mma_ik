@@ -19,6 +19,8 @@ public:
 
 	void Reset(int dim);
 
+	void SwapElems(int i, int j);
+
 	VectorNDim& operator +=(const VectorNDim& other);
 	double operator[](int i) const;
 	double& operator[](int i);

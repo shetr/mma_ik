@@ -22,27 +22,35 @@ void AJacobianTransposeIK_Solver::Reset(ChainData& data)
 
 void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, float DeltaTime)
 {
-    double h = 0.0001f;
-    double EPS = 0.001f;
+    double h = 0.0001;
+    double EPS = 0.001;
+    int maxIters = 5;
     FVector targetPosition = data.TargetPoint->GetActorLocation();
+    // If target is too far, move it closer
+    double originTargetDist = (targetPosition - origin).Length();
+    if (originTargetDist > data.TotalChainLength) {
+        FVector targetDir = targetPosition - origin;
+        targetDir = targetDir * (data.TotalChainLength / originTargetDist);
+        targetPosition = origin + targetDir;
+    }
+    // recompute transforms
     data.RecomputeSegmentTransforms();
     data.TransformSegments(origin);
-    // TODO: delete this line later
-    data.RecomputeJacobian();
-    int iter = 0;
 
     #if 0
     UE_LOG(LogTemp, Warning, TEXT("data.EndEffectorPos: %f, %f, %f"), data.EndEffectorPos.X, data.EndEffectorPos.Y, data.EndEffectorPos.Z);
     #endif
-    while ((data.EndEffectorPos - targetPosition).Length() > EPS)
+    int iter = 0;
+    while ((data.EndEffectorPos - targetPosition).Length() > EPS && iter < maxIters)
     {
-        if (iter > 0)
-            break;
+        // compute jacobian
         data.RecomputeJacobian();
+        // apply the jacobian transpose: dO = J^T * dX
         data.Jacobian.Transpose(JacobianTranspose);
         dX.Set(targetPosition - data.EndEffectorPos);
         JacobianTranspose.Multiply(dX, dO);
-    
+
+        // apply the angle changes
         for (int i = 0; i < data.NumberOfSegments; ++i)
         {
             data.SegmentAngles[i].X += dO[3 * i + 0] * h * DeltaTime;

@@ -30,20 +30,30 @@ public:
 	virtual void Solve(ChainData& data, const FVector& origin, float DeltaTime) override;
 
 private:
+	// If the jacobian equations have rank lower than 3, then this method will reduce it to smaller number of equatins, so that the rank is equal to the number of rows
 	void ReduceJacobian(const MatrixMxN& J);
 
 private:
+	// J * J^T
 	MatrixMxN JJT;
+	// J^T * J
 	MatrixMxN JTJ;
+	// (J * J^T)^-1
 	MatrixMxN JJTinv;
+	// jacobian pseudoinverse
 	MatrixMxN Jpinv;
+	// transposed jacobian
 	MatrixMxN JT;
+	// Vector pointing from the end effector to the target possition
 	VectorNDim dX;
+	// Angle parameters change
 	VectorNDim dO;
 
+	// equation J dO = dX is eliminated to equivalent GJ dO = GdX
 	MatrixMxN GJ;
 	VectorNDim GdX;
 
+	// RJ dO = RdX is GJ dO = GdX with zero rows droped
 	MatrixMxN RJ;
 	VectorNDim RdX;
 };
