@@ -20,7 +20,7 @@ void AJacobianTransposeIK_Solver::Reset(ChainData& data)
 {
 }
 
-void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, float DeltaTime)
+void AJacobianTransposeIK_Solver::Solve(ChainData& data, const FVector& origin, float DeltaTime, bool CCDTopDown)
 {
     double h = 0.0001f;
     double EPS = 0.001f;

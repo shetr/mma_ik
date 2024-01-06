@@ -20,7 +20,7 @@ void AJacobianInverseIK_Solver::Reset(ChainData& data)
 {
 }
 
-void AJacobianInverseIK_Solver::Solve(ChainData& data, const FVector& origin, float DeltaTime)
+void AJacobianInverseIK_Solver::Solve(ChainData& data, const FVector& origin, float DeltaTime, bool CCDTopDown)
 {
     double EPS = 0.001f;
     FVector targetPosition = data.TargetPoint->GetActorLocation();

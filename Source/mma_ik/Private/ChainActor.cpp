@@ -98,7 +98,7 @@ void AChainActor::Tick(float DeltaTime)
     }
 
     if (solver) {
-        solver->Solve(data, GetActorLocation(), DeltaTime);
+        solver->Solve(data, GetActorLocation(), DeltaTime, CCDTopDown);
     }
 
 }

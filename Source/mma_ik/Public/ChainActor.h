@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Segments")
 	int32 NumberOfSegments = 10;
 
+	UPROPERTY(EditAnywhere, Category = "Segments")
+	bool CCDTopDown = true;
+
 private:
 
 protected:

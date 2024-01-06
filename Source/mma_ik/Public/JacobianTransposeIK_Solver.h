@@ -28,7 +28,7 @@ public:
 
 	virtual void Reset(ChainData& data) override;
 
-	virtual void Solve(ChainData& data, const FVector& origin, float DeltaTime) override;
+	virtual void Solve(ChainData& data, const FVector& origin, float DeltaTime, bool CCDTopDown) override;
 
 private:
 	MatrixMxN JacobianTranspose;
