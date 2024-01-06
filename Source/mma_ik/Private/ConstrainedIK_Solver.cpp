@@ -21,7 +21,7 @@ void AConstrainedIK_Solver::Reset(ChainData& data)
 {
 }
 
-void AConstrainedIK_Solver::Solve(ChainData& data, const FVector& origin, float DeltaTime)
+void AConstrainedIK_Solver::Solve(ChainData& data, const FVector& origin, float DeltaTime, bool CCDTopDown)
 {
 	FVector targetPos = data.TargetPoint->GetActorLocation();
     FVector targetDir = (targetPos - origin).GetSafeNormal();

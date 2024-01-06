@@ -27,7 +27,7 @@ public:
 
 	virtual void Reset(ChainData& data) override;
 
-	virtual void Solve(ChainData& data, const FVector& origin, float DeltaTime) override;
+	virtual void Solve(ChainData& data, const FVector& origin, float DeltaTime, bool CCDTopDown) override;
 
 private:
 	// If the jacobian equations have rank lower than 3, then this method will reduce it to smaller number of equatins, so that the rank is equal to the number of rows

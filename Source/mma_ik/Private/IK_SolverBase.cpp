@@ -29,7 +29,7 @@ void AIK_SolverBase::Reset(ChainData& data)
 {
 }
 
-void AIK_SolverBase::Solve(ChainData& data, const FVector& origin, float DeltaTime)
+void AIK_SolverBase::Solve(ChainData& data, const FVector& origin, float DeltaTime, bool CCDTopDown)
 {
 }
 
